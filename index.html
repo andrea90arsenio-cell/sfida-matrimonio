@@ -1,73 +1,66 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Sfida d’Amore - Ele & Ale</title>
-<style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #fefefe;
-    color: #333;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    padding: 20px;
-    text-align: center;
-  }
-  .container {
-    background: #fff;
-    border-radius: 12px;
-    padding: 30px 40px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-    max-width: 400px;
-  }
-  h1 {
-    margin-bottom: 20px;
-    color: #a83279;
-  }
-  .challenge {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin: 30px 0;
-  }
-  footer {
-    margin-top: 40px;
-    font-size: 0.9rem;
-    color: #999;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sfida d’Amore - Ele & Ale</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #fff8f0;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      font-weight: 600;
+      color: #b34700;
+      margin-bottom: 0.2em;
+    }
+    #sfida-container {
+      margin-top: 30px;
+      font-size: 1.4em;
+      font-style: italic;
+      color: #8a4b0f;
+      max-width: 400px;
+      background: #ffe6cc;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(255, 155, 80, 0.3);
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Sfida d’Amore 💖</h1>
-    <div class="challenge" id="challenge">Caricamento…</div>
-    <footer>Buon divertimento agli ospiti di Ele & Ale!</footer>
+  <h1>Benvenuto alla Sfida d’Amore!</h1>
+  <p>Pronto a divertirti con una piccola missione durante la festa? 💖</p>
+
+  <div id="sfida-container">
+    <!-- Qui apparirà la sfida -->
   </div>
 
   <script>
     const sfide = [
-      "Fai un brindisi con uno sconosciuto.",
+      "Vai a fare un brindisi con uno sconosciuto.",
       "Racconta agli sposi il tuo più bel ricordo con loro.",
-      "Scatta un selfie con almeno tre persone che non conosci.",
-      "Invita qualcuno a ballare anche se non lo conosci.",
-      "Dì agli sposi cosa ammiri di più nella loro coppia.",
-      "Fai un complimento sincero a un invitato che non conosci.",
-      "Canta una strofa della canzone degli sposi a voce alta.",
-      "Fai una foto divertente e inviala agli sposi dopo la festa.",
-      "Trova qualcuno con il tuo stesso segno zodiacale e parla con lui.",
-      "Scrivi un augurio speciale su un biglietto e consegnalo agli sposi."
+      "Fai una foto divertente con un amico e mostrala agli sposi.",
+      "Balla almeno una canzone con qualcuno che non conosci.",
+      "Trova qualcuno con cui condividere un segreto sulla coppia."
     ];
 
-    function mostraSfida() {
-      const index = Math.floor(Math.random() * sfide.length);
-      document.getElementById('challenge').textContent = sfide[index];
-    }
+    const sfidaCasuale = sfide[Math.floor(Math.random() * sfide.length)];
 
-    mostraSfida();
+    window.onload = function() {
+      const container = document.getElementById("sfida-container");
+      if (container) {
+        container.textContent = sfidaCasuale;
+      }
+    }
   </script>
 </body>
 </html>
