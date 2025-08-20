@@ -3,46 +3,90 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sfida d’Amore - Ele & Ale</title>
+  <title>Sfida</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Libre+Baskerville&display=swap');
+
     body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: #fff8f0;
-      color: #333;
+      font-family: 'Libre Baskerville', serif;
+      background-color: #fef9f4;
+      color: #5a4d3a;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
-      padding: 20px;
+      padding: 40px 20px 80px; /* spazio in basso per footer */
       text-align: center;
+      background-image: 
+        url('https://www.transparenttextures.com/patterns/pw-maze-white.png'),
+        url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');
+      background-repeat: repeat, no-repeat;
+      background-size: 100px 100px, cover;
+      background-position: center, center;
+      background-blend-mode: multiply;
     }
+
     h1 {
-      font-weight: 600;
-      color: #b34700;
-      margin-bottom: 0.2em;
+      font-family: 'Great Vibes', cursive;
+      font-size: 6em;
+      color: #b79f86cc;
+      margin: 0 0 0.3em 0;
+      text-shadow: 1px 1px 3px rgba(90, 77, 58, 0.5);
+      user-select: none;
     }
-    #sfida-container {
-      margin-top: 30px;
-      font-size: 1.4em;
+
+    p.subtitle {
       font-style: italic;
-      color: #8a4b0f;
-      max-width: 400px;
-      background: #ffe6cc;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(255, 155, 80, 0.3);
+      font-size: 1.5em;
+      max-width: 500px;
+      color: #8c7b6a;
+      margin: 0 0 2.5em 0;
+      user-select: none;
+    }
+
+    #sfida-container {
+      background: #fef9f4cc;
+      border: 1px solid #c9bfa7cc;
+      padding: 30px 40px;
+      border-radius: 15px;
+      max-width: 500px;
+      font-size: 1.6em;
+      font-style: italic;
+      box-shadow: 0 8px 20px rgb(160 138 110 / 0.25);
+      color: #7a6f5b;
+      user-select: text;
+    }
+
+    footer {
+      position: relative;
+      z-index: 10;
+      color: #6b5e3a;
+      background: rgba(255 255 255 / 0.75);
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+      max-width: 500px;
+      margin: 3em auto 0 auto;
+      font-size: 1.2em;
+      font-style: italic;
+      user-select: none;
     }
   </style>
 </head>
 <body>
-  <h1>Benvenuto alla Sfida d’Amore!</h1>
-  <p>Pronto a divertirti con una piccola missione durante la festa? 💖</p>
+  <h1>Sfida</h1>
+  <p class="subtitle">Un piccolo gioco per animare la festa e creare ricordi indimenticabili.</p>
 
   <div id="sfida-container">
     <!-- Qui apparirà la sfida -->
   </div>
+
+  <footer>
+    Grazie di cuore per far parte di questo giorno speciale.<br />
+    La vostra partecipazione rende tutto più unico e prezioso.
+  </footer>
 
   <script>
     const sfide = [
