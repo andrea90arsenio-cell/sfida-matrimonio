@@ -3,109 +3,96 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sfida</title>
+  <title>Playlist Ele & Ale</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Libre+Baskerville&display=swap');
-
     body {
-      font-family: 'Libre Baskerville', serif;
-      background-color: #fefaf5;
-      color: #5a4d3a;
+      margin: 0;
+      padding: 0;
+      font-family: 'Georgia', serif;
+      background: url('https://cdn.pixabay.com/photo/2020/08/02/07/04/vinyl-5464499_1280.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #f8f4f0;
+      text-align: center;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 40px 20px 80px;
-      text-align: center;
-
-      /* Nuovo sfondo elegante */
-      background-image:
-        url('https://i.ibb.co/jGV9rR7/floral-background-light.png');
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
+      padding: 20px;
+      box-sizing: border-box;
     }
 
     h1 {
-      font-family: 'Great Vibes', cursive;
-      font-size: 6em;
-      color: #b79f86cc;
-      margin: 0 0 0.3em 0;
-      text-shadow: 1px 1px 3px rgba(90, 77, 58, 0.5);
-      user-select: none;
+      font-size: 3em;
+      margin-bottom: 0.2em;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
     }
 
     p.subtitle {
+      font-size: 1.3em;
+      margin-bottom: 1.5em;
       font-style: italic;
-      font-size: 1.5em;
-      max-width: 500px;
-      color: #8c7b6a;
-      margin: 0 0 2.5em 0;
-      user-select: none;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
     }
 
-    #sfida-container {
-      background: #fef9f4dd;
-      border: 1px solid #c9bfa7cc;
-      padding: 30px 40px;
-      border-radius: 15px;
+    p.instructions {
+      font-size: 1.1em;
+      margin-bottom: 2em;
       max-width: 500px;
-      font-size: 1.6em;
-      font-style: italic;
-      box-shadow: 0 8px 20px rgb(160 138 110 / 0.25);
-      color: #7a6f5b;
-      user-select: text;
+      margin-left: auto;
+      margin-right: auto;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+
+    a.button {
+      display: inline-block;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: #f8f4f0;
+      padding: 12px 30px;
+      margin: 10px 15px;
+      border-radius: 30px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 1.1em;
+      transition: background-color 0.3s ease;
+      box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+      max-width: 300px;
+      word-break: break-word;
+    }
+
+    a.button:hover {
+      background-color: rgba(255, 255, 255, 0.5);
     }
 
     footer {
-      position: relative;
-      z-index: 10;
-      color: #6b5e3a;
-      background: rgba(255 255 255 / 0.8);
-      padding: 15px 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
-      max-width: 500px;
-      margin: 3em auto 0 auto;
-      font-size: 1.2em;
+      margin-top: 2em;
+      font-size: 1em;
       font-style: italic;
-      user-select: none;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
     }
   </style>
 </head>
 <body>
-  <h1>Sfida</h1>
-  <p class="subtitle">Un piccolo gioco per animare la festa e creare ricordi indimenticabili.</p>
+  <h1>La colonna sonora di Ele & Ale</h1>
+  <p class="subtitle">Scopri, ascolta e aggiungi la tua canzone per il futuro.</p>
 
-  <div id="sfida-container">
-    <!-- Qui apparirà la sfida -->
-  </div>
+  <p class="instructions">
+    <strong>Se hai Spotify:</strong><br/>
+    Clicca il link qui sotto per ascoltare e aggiungere direttamente alla playlist.
+  </p>
+  <a href="https://open.spotify.com/playlist/2XTrRlyfbnwczQ5GrB6MgH?si=jyJHiTx1TfqiTaFJY0rNJg&pt=fb4b6b0116092ddff5f7e9a27c6a32b0" target="_blank" rel="noopener" class="button">
+    Ascolta e aggiungi su Spotify
+  </a>
+
+  <p class="instructions" style="margin-top: 2em;">
+    <strong>Se non hai Spotify:</strong><br/>
+    Suggerisci una canzone tramite il modulo online.
+  </p>
+  <a href="https://form.typeform.com/to/A9PDXF4m" target="_blank" rel="noopener" class="button">
+    Suggerisci una canzone
+  </a>
 
   <footer>
-    Grazie di cuore per far parte di questo giorno speciale.<br />
-    La vostra partecipazione rende tutto più unico e prezioso.
+    Grazie di cuore per contribuire a rendere questa playlist speciale e unica.
   </footer>
-
-  <script>
-    const sfide = [
-      "Vai a fare un brindisi con uno sconosciuto.",
-      "Racconta agli sposi il tuo più bel ricordo con loro.",
-      "Fai una foto divertente con un amico e mostrala agli sposi.",
-      "Balla almeno una canzone con qualcuno che non conosci.",
-      "Trova qualcuno con cui condividere un segreto sulla coppia."
-    ];
-
-    const sfidaCasuale = sfide[Math.floor(Math.random() * sfide.length)];
-
-    window.onload = function() {
-      const container = document.getElementById("sfida-container");
-      if (container) {
-        container.textContent = sfidaCasuale;
-      }
-    }
-  </script>
 </body>
 </html>
