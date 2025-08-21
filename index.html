@@ -9,16 +9,33 @@
   <link href="https://fonts.cdnfonts.com/css/ex-padrian" rel="stylesheet">
 
   <style>
+    :root{
+      --ink:#4a3f30;
+    }
+    html,body{height:100%}
     body {
       margin: 0;
       padding: 40px 20px;
       font-family: 'Ex Padrian', Georgia, serif;
+
+      /* 1) Fallback “carta chiara” (sempre visibile) */
       background:
-        linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)),
-        url('https://images.unsplash.com/photo-1524492449090-1a065f3a99ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80')
-        no-repeat center center fixed;
-      background-size: cover;
-      color: #4a3f30;
+        radial-gradient(90% 60% at 10% -10%, rgba(255,255,255,0.9), rgba(255,255,255,0) 60%),
+        radial-gradient(90% 60% at 110% 110%, rgba(255,255,255,0.9), rgba(255,255,255,0) 60%),
+        linear-gradient(180deg, #fbfaf7 0%, #f4efe7 100%);
+
+      /* 2) Sostituita automaticamente se carichi ./img/sfondo.jpg */
+      background-image:
+        radial-gradient(90% 60% at 10% -10%, rgba(255,255,255,0.9), rgba(255,255,255,0) 60%),
+        radial-gradient(90% 60% at 110% 110%, rgba(255,255,255,0.9), rgba(255,255,255,0) 60%),
+        linear-gradient(180deg, #fbfaf7 0%, #f4efe7 100%),
+        url("./img/sfondo.jpg"); /* <-- metti qui la tua immagine */
+
+      background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+      background-size: cover, cover, cover, cover;
+      background-position: center center, center center, center center, center center;
+
+      color: var(--ink);
       text-align: center;
       display: flex;
       flex-direction: column;
@@ -28,40 +45,35 @@
       box-sizing: border-box;
     }
     h1 {
-      font-size: 3.5em;
-      margin-bottom: 0.2em;
-      font-weight: normal;
+      font-size: clamp(32px, 6vw, 56px);
+      margin: 0 0 .2em 0;
+      font-weight: 400;
     }
     p.description {
-      font-size: 1.3em;
-      margin-top: 0;
-      margin-bottom: 1.5em;
+      font-size: clamp(16px, 3.2vw, 22px);
+      margin: 0 0 1.2em 0;
       font-style: italic;
     }
     p.challenge {
-      font-size: 2.2em;
+      font-size: clamp(22px, 4.8vw, 34px);
       font-weight: bold;
-      margin-bottom: 1.5em;
-      line-height: 1.3;
+      margin: 0 0 1.2em 0;
+      line-height: 1.25;
     }
-    .actions {
-      margin-bottom: 2em;
-    }
+    .actions { margin-bottom: 2em; }
     button {
       font-family: inherit;
       font-size: 1em;
       padding: 0.6em 1.2em;
-      border-radius: 25px;
+      border-radius: 999px;
       border: 1px solid #c8bca8;
       background: #fff;
       cursor: pointer;
       transition: transform .1s ease;
     }
-    button:hover {
-      transform: translateY(-2px);
-    }
+    button:hover { transform: translateY(-2px); }
     p.thanks {
-      font-size: 1.2em;
+      font-size: clamp(14px, 3vw, 18px);
       font-style: italic;
       margin-top: auto;
     }
@@ -94,11 +106,9 @@
       if (!raw) return null;
       try { return JSON.parse(raw); } catch { return null; }
     }
-
     function save(index) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ index }));
     }
-
     function pickRandom(exclude) {
       let idx;
       do {
