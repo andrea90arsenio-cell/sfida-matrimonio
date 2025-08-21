@@ -7,15 +7,15 @@
 
   <!-- Font Ex Padrian -->
   <link href="https://fonts.cdnfonts.com/css/ex-padrian" rel="stylesheet">
-  <!-- Preload dello sfondo -->
+
+  <!-- Preload dello sfondo (non blocca se il file non c’è) -->
   <link rel="preload" as="image" href="sfondo.jpg" />
-  <!-- Preload facoltativo dell'audio (se presente) -->
-  <link rel="preload" as="audio" href="musica.mp3" />
 
   <style>
     :root { --ink:#4a3f30; }
     html, body { height: 100%; margin:0; }
 
+    /* Fallback “carta chiara” sempre visibile */
     body{
       color:var(--ink);
       font-family:'Ex Padrian', Georgia, serif;
@@ -30,17 +30,18 @@
       min-height:100vh;
     }
 
+    /* Quando lo sfondo è pronto, lo applico con overlay leggero */
     body.bg-loaded{
       background:
-        linear-gradient(rgba(255,255,255,0.15), rgba(255,255,255,0.15)), /* overlay leggero */
+        linear-gradient(rgba(255,255,255,0.15), rgba(255,255,255,0.15)),
         url("sfondo.jpg") no-repeat center center fixed,
         radial-gradient(90% 60% at 10% -10%, rgba(255,255,255,0.9), rgba(255,255,255,0) 60%),
         radial-gradient(90% 60% at 110% 110%, rgba(255,255,255,0.9), rgba(255,255,255,0) 60%),
         linear-gradient(180deg,#fbfaf7 0%,#f4efe7 100%);
-      background-size: cover;
+      background-size: cover, cover, cover, cover, cover;
     }
 
-    .spacer { flex:1; } /* spazio sopra per posizionare il blocco più in basso */
+    .spacer { flex:1; } /* spazio sopra per posizionare il blocco più in alto/basso */
     main.stack{
       margin-bottom: 10vh;     /* regola l’altezza del blocco (più su/giù) */
       padding: 20px;
@@ -98,7 +99,7 @@
       margin: 0;
     }
 
-    /* Pulsante musica “secondario” */
+    /* Pulsante musica “secondario” (compare solo se il file esiste) */
     .btn-ghost{
       background: rgba(255,255,255,0.7);
       border: 1px solid #d9d0c1;
@@ -121,18 +122,21 @@
     <p class="thanks">Grazie per partecipare e rendere questo giorno indimenticabile.</p>
   </main>
 
-  <!-- Audio di sottofondo (carica "musica.mp3" accanto a index.html) -->
-  <audio id="bgMusic" src="musica.mp3" loop preload="auto"></audio>
+  <!-- Audio di sottofondo (opzionale): se "musica.mp3" non esiste, il bottone resta nascosto -->
+  <audio id="bgMusic" src="musica.mp3" loop preload="none"></audio>
 
   <script>
-    // Precarico lo sfondo e applico quando pronto
+    // Precarico lo sfondo e lo applico quando è pronto (evita pagina “vuota” finché l’immagine non c’è)
     (function preloadBg(){
-      const img = new Image();
-      img.onload = () => document.body.classList.add('bg-loaded');
-      img.src = 'sfondo.jpg';
+      try{
+        const img = new Image();
+        img.onload = () => document.body.classList.add('bg-loaded');
+        img.onerror = () => {/* resta il fallback */}
+        img.src = 'sfondo.jpg';
+      }catch(e){}
     })();
 
-    // Lista definitiva delle 20 sfide
+    // Lista delle 20 sfide (con la 7 aggiornata)
     const challenges = [
       "Fai un brindisi con un tavolo che non conosci.",
       "Scatta una foto divertente con due persone appena conosciute.",
@@ -158,17 +162,17 @@
 
     // Local storage e random
     const STORAGE_KEY = "sfida_generica";
-    const loadSaved = () => {
+    function loadSaved(){
       try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "null"); }
       catch { return null; }
-    };
-    const save = (index) => localStorage.setItem(STORAGE_KEY, JSON.stringify({ index }));
-    const pickRandom = (exclude) => {
+    }
+    function save(index){ localStorage.setItem(STORAGE_KEY, JSON.stringify({ index })); }
+    function pickRandom(exclude){
       let idx;
       do { idx = Math.floor(Math.random() * challenges.length); }
       while (idx === exclude && challenges.length > 1);
       return idx;
-    };
+    }
 
     // Animazione cambio testo (rispetta prefers-reduced-motion)
     function animateSwap(el, newText){
@@ -202,28 +206,30 @@
         animateSwap(challengeText, challenges[index]);
       });
 
-      // Musica di sottofondo
+      // Musica (mostra il bottone solo se il file esiste davvero)
       const audio = document.getElementById('bgMusic');
       const btnMusic = document.getElementById('musicBtn');
 
-      // Se il file audio esiste, abilito il bottone
-      audio.addEventListener('error', () => {
-        // nascondi il bottone se il file non si carica (404 o assente)
-        btnMusic.style.display = 'none';
-      });
-      audio.addEventListener('canplay', () => {
-        btnMusic.style.display = 'inline-block';
-      });
+      // Tenta di caricare una piccola porzione per capire se esiste
+      let checked = false;
+      function showIfAvailable(){
+        if(checked) return;
+        checked = true;
+        if (audio.duration > 0 || !isNaN(audio.duration)) {
+          btnMusic.style.display = 'inline-block';
+        }
+      }
+      audio.addEventListener('loadedmetadata', showIfAvailable);
+      audio.addEventListener('canplay', showIfAvailable);
+      audio.addEventListener('error', () => { btnMusic.style.display = 'none'; });
 
-      // Impostazioni audio iniziali
-      audio.volume = 0.35; // volume moderato
+      audio.volume = 0.35;
       let playing = false;
 
-      // Toggle musica al click
       btnMusic.addEventListener('click', async () => {
         try{
           if(!playing){
-            await audio.play();     // alcuni browser richiedono gesto utente (qui c'è)
+            await audio.play();
             playing = true;
             btnMusic.textContent = 'Musica ❚❚';
           } else {
@@ -232,7 +238,6 @@
             btnMusic.textContent = 'Musica ▷';
           }
         }catch(e){
-          // Se il browser blocca, mostro stato OFF
           playing = false;
           btnMusic.textContent = 'Musica ▷';
         }
