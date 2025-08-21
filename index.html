@@ -14,8 +14,8 @@
       padding: 40px 20px;
       font-family: 'Ex Padrian', Georgia, serif;
       background:
-        linear-gradient(rgba(255,255,255,0.6), rgba(255,255,255,0.6)),
-        url('https://png.pngtree.com/background/20230611/original/pngtree-beautiful-white-floral-border-background-picture-image_3132962.jpg') 
+        linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)),
+        url('https://images.unsplash.com/photo-1524492449090-1a065f3a99ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80')
         no-repeat center center fixed;
       background-size: cover;
       color: #4a3f30;
@@ -41,8 +41,24 @@
     p.challenge {
       font-size: 2.2em;
       font-weight: bold;
-      margin-bottom: 2em;
+      margin-bottom: 1.5em;
       line-height: 1.3;
+    }
+    .actions {
+      margin-bottom: 2em;
+    }
+    button {
+      font-family: inherit;
+      font-size: 1em;
+      padding: 0.6em 1.2em;
+      border-radius: 25px;
+      border: 1px solid #c8bca8;
+      background: #fff;
+      cursor: pointer;
+      transition: transform .1s ease;
+    }
+    button:hover {
+      transform: translateY(-2px);
     }
     p.thanks {
       font-size: 1.2em;
@@ -55,6 +71,11 @@
   <h1>Sfida</h1>
   <p class="description">Un piccolo gioco per rendere la festa ancora più speciale.</p>
   <p class="challenge" id="challengeText"></p>
+
+  <div class="actions">
+    <button id="newBtn" type="button">Nuova sfida</button>
+  </div>
+
   <p class="thanks">Grazie per partecipare e rendere questo giorno indimenticabile.</p>
 
   <script>
@@ -66,7 +87,6 @@
       "Fai un complimento sincero a due persone che non conosci."
     ];
 
-    // Chiave di salvataggio
     const STORAGE_KEY = "sfida_generica";
 
     function loadSaved() {
@@ -79,8 +99,12 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ index }));
     }
 
-    function pickRandom() {
-      return Math.floor(Math.random() * challenges.length);
+    function pickRandom(exclude) {
+      let idx;
+      do {
+        idx = Math.floor(Math.random() * challenges.length);
+      } while (idx === exclude && challenges.length > 1);
+      return idx;
     }
 
     (function init() {
@@ -88,13 +112,20 @@
       let index;
 
       if (saved && Number.isInteger(saved.index)) {
-        index = saved.index; // usa la sfida salvata
+        index = saved.index;
       } else {
-        index = pickRandom(); // genera nuova sfida
+        index = pickRandom();
         save(index);
       }
 
-      document.getElementById("challengeText").textContent = challenges[index];
+      const challengeText = document.getElementById("challengeText");
+      challengeText.textContent = challenges[index];
+
+      document.getElementById("newBtn").addEventListener("click", () => {
+        index = pickRandom(index);
+        save(index);
+        challengeText.textContent = challenges[index];
+      });
     })();
   </script>
 </body>
