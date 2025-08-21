@@ -8,76 +8,109 @@
   <!-- Font Ex Padrian -->
   <link href="https://fonts.cdnfonts.com/css/ex-padrian" rel="stylesheet">
 
+  <!-- Precarica lo sfondo per evitare che appaia solo dopo un refresh -->
+  <link rel="preload" as="image" href="sfondo.jpg" />
+
   <style>
-    body {
-      margin: 0;
-      padding: 40px 20px;
-      font-family: 'Ex Padrian', Georgia, serif;
+    :root { --ink:#4a3f30; }
+    html, body { height: 100%; }
+
+    /* Fallback “carta chiara” sempre visibile */
+    body{
+      margin:0;
+      color:var(--ink);
+      font-family:'Ex Padrian', Georgia, serif;
+      display:grid;
+      place-items:end center;       /* ancora più in basso */
+      padding: 0 20px 6vh;          /* sposta il blocco più vicino al fondo */
+      box-sizing:border-box;
+      text-align:center;
+      text-shadow:1px 1px 2px rgba(255,255,255,0.6);
       background:
-        linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0.3)), /* overlay più leggero */
-        url("./sfondo.jpg") no-repeat center center fixed;
-      background-size: cover;
-      color: #4a3f30;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end; /* contenuto in basso */
-      min-height: 100vh;
-      text-shadow: 1px 1px 2px rgba(255,255,255,0.6);
-      box-sizing: border-box;
+        radial-gradient(90% 60% at 10% -10%, rgba(255,255,255,0.9), rgba(255,255,255,0) 60%),
+        radial-gradient(90% 60% at 110% 110%, rgba(255,255,255,0.9), rgba(255,255,255,0) 60%),
+        linear-gradient(180deg,#fbfaf7 0%,#f4efe7 100%);
+      min-height:100vh;
     }
-    h1 {
-      font-size: 3.5em;
-      margin-bottom: 0.2em;
-      font-weight: normal;
+
+    /* Quando l'immagine è pronta, applico anche lo sfondo vero + overlay leggero */
+    body.bg-loaded{
+      background:
+        linear-gradient(rgba(255,255,255,0.35), rgba(255,255,255,0.35)), /* overlay più leggero */
+        url("sfondo.jpg") no-repeat center center fixed,
+        radial-gradient(90% 60% at 10% -10%, rgba(255,255,255,0.9), rgba(255,255,255,0) 60%),
+        radial-gradient(90% 60% at 110% 110%, rgba(255,255,255,0.9), rgba(255,255,255,0) 60%),
+        linear-gradient(180deg,#fbfaf7 0%,#f4efe7 100%);
+      background-size: cover, cover, cover, cover, cover;
     }
-    p.description {
-      font-size: 1.3em;
-      margin-top: 0;
-      margin-bottom: 1.5em;
+
+    /* Blocco contenuti raccolto e vicino al ringraziamento */
+    .stack{
+      display:grid;
+      gap: 10px;                    /* blocchi più compatti tra loro */
+      max-width:min(820px, 100%);
+      padding: 24px 12px;           /* leggero padding per respirare */
+    }
+
+    h1{
+      font-size: clamp(32px, 6vw, 56px);
+      margin: 0;
+      font-weight: 400;
+    }
+    p.description{
+      font-size: clamp(16px, 3.2vw, 22px);
+      margin: 0;
       font-style: italic;
     }
-    p.challenge {
-      font-size: 2.2em;
-      font-weight: bold;
-      margin-bottom: 1.5em;
-      line-height: 1.3;
+    p.challenge{
+      font-size: clamp(22px, 4.8vw, 34px);
+      font-weight: 700;
+      line-height: 1.25;
+      margin: 8px 0 0 0;
     }
-    .actions {
-      margin-bottom: 1.5em;
-    }
-    button {
-      font-family: inherit;
-      font-size: 1em;
-      padding: 0.6em 1.2em;
+
+    .actions{ margin: 6px 0 0 0; }
+    button{
+      font: inherit;
+      padding: .6em 1.2em;
       border-radius: 25px;
       border: 1px solid #c8bca8;
       background: #fff;
       cursor: pointer;
-      transition: transform .1s ease;
+      transition: transform .1s;
     }
-    button:hover {
-      transform: translateY(-2px);
-    }
-    p.thanks {
-      font-size: 1.2em;
+    button:hover{ transform: translateY(-2px); }
+
+    p.thanks{
+      font-size: clamp(14px, 3vw, 18px);
       font-style: italic;
-      margin: 0 0 30px 0; /* spazio dal fondo */
+      margin: 4px 0 0 0;           /* molto vicino al resto */
     }
   </style>
 </head>
 <body>
-  <h1>Sfida</h1>
-  <p class="description">Un piccolo gioco per rendere la festa ancora più speciale.</p>
-  <p class="challenge" id="challengeText"></p>
+  <main class="stack">
+    <h1>Sfida</h1>
+    <p class="description">Un piccolo gioco per rendere la festa ancora più speciale.</p>
+    <p class="challenge" id="challengeText"></p>
 
-  <div class="actions">
-    <button id="newBtn" type="button">Nuova sfida</button>
-  </div>
+    <div class="actions">
+      <button id="newBtn" type="button">Nuova sfida</button>
+    </div>
 
-  <p class="thanks">Grazie per partecipare e rendere questo giorno indimenticabile.</p>
+    <p class="thanks">Grazie per partecipare e rendere questo giorno indimenticabile.</p>
+  </main>
 
   <script>
+    // Precarico lo sfondo e lo applico quando è pronto
+    (function preloadBg(){
+      const img = new Image();
+      img.onload = () => document.body.classList.add('bg-loaded');
+      img.onerror = () => {/* resta il fallback, nessun errore a schermo */};
+      img.src = 'sfondo.jpg';
+    })();
+
+    // Logica "sfida"
     const challenges = [
       "Vai a fare un brindisi con uno sconosciuto.",
       "Racconta agli sposi il tuo più bel ricordo con loro.",
@@ -87,35 +120,22 @@
     ];
 
     const STORAGE_KEY = "sfida_generica";
-
-    function loadSaved() {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return null;
-      try { return JSON.parse(raw); } catch { return null; }
-    }
-
-    function save(index) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ index }));
-    }
-
-    function pickRandom(exclude) {
+    const loadSaved = () => {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "null"); }
+      catch { return null; }
+    };
+    const save = (index) => localStorage.setItem(STORAGE_KEY, JSON.stringify({ index }));
+    const pickRandom = (exclude) => {
       let idx;
-      do {
-        idx = Math.floor(Math.random() * challenges.length);
-      } while (idx === exclude && challenges.length > 1);
+      do { idx = Math.floor(Math.random() * challenges.length); }
+      while (idx === exclude && challenges.length > 1);
       return idx;
-    }
+    };
 
-    (function init() {
+    (function init(){
       let saved = loadSaved();
-      let index;
-
-      if (saved && Number.isInteger(saved.index)) {
-        index = saved.index;
-      } else {
-        index = pickRandom();
-        save(index);
-      }
+      let index = (saved && Number.isInteger(saved.index)) ? saved.index : pickRandom();
+      if (!saved) save(index);
 
       const challengeText = document.getElementById("challengeText");
       challengeText.textContent = challenges[index];
