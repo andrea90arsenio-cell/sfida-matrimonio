@@ -7,30 +7,40 @@
 
   <!-- Font Ex Padrian -->
   <link href="https://fonts.cdnfonts.com/css/ex-padrian" rel="stylesheet">
-
-  <!-- Preload dello sfondo (non blocca se il file non c’è) -->
+  <!-- Preload sfondo -->
   <link rel="preload" as="image" href="sfondo.jpg" />
 
   <style>
-    :root { --ink:#4a3f30; }
-    html, body { height: 100%; margin:0; }
+    :root{
+      --ink:#4a3f30;
 
-    /* Fallback “carta chiara” sempre visibile */
+      /* 4 aranci delicati */
+      --orange1:#FFE1B3; /* Facile */
+      --orange2:#FFD199; /* Difficile */
+      --orange3:#FFC07F; /* Impossibile */
+      --orange4:#FFB066; /* Random */
+
+      --orange1-b:#EBCB98;
+      --orange2-b:#E7BC84;
+      --orange3-b:#E2A869;
+      --orange4-b:#D99953;
+    }
+
+    html, body { height:100%; margin:0; }
     body{
       color:var(--ink);
       font-family:'Ex Padrian', Georgia, serif;
-      display:flex;
-      flex-direction:column;
+      display:flex; flex-direction:column;
+      text-align:center;
+      text-shadow:1px 1px 2px rgba(255,255,255,0.6);
+      min-height:100vh;
+
+      /* Fallback “carta chiara” */
       background:
         radial-gradient(90% 60% at 10% -10%, rgba(255,255,255,0.9), rgba(255,255,255,0) 60%),
         radial-gradient(90% 60% at 110% 110%, rgba(255,255,255,0.9), rgba(255,255,255,0) 60%),
         linear-gradient(180deg,#fbfaf7 0%,#f4efe7 100%);
-      text-align:center;
-      text-shadow:1px 1px 2px rgba(255,255,255,0.6);
-      min-height:100vh;
     }
-
-    /* Quando lo sfondo è pronto, lo applico con overlay leggero */
     body.bg-loaded{
       background:
         linear-gradient(rgba(255,255,255,0.15), rgba(255,255,255,0.15)),
@@ -38,72 +48,72 @@
         radial-gradient(90% 60% at 10% -10%, rgba(255,255,255,0.9), rgba(255,255,255,0) 60%),
         radial-gradient(90% 60% at 110% 110%, rgba(255,255,255,0.9), rgba(255,255,255,0) 60%),
         linear-gradient(180deg,#fbfaf7 0%,#f4efe7 100%);
-      background-size: cover, cover, cover, cover, cover;
+      background-size:cover;
     }
 
-    .spacer { flex:1; } /* spazio sopra per posizionare il blocco più in alto/basso */
+    .spacer{ flex:1; }
     main.stack{
-      margin-bottom: 10vh;     /* regola l’altezza del blocco (più su/giù) */
-      padding: 20px;
-      max-width: min(820px, 100%);
-      margin-left: auto; margin-right: auto;
-      display: grid; gap: 10px;
+      margin: 0 auto 10vh auto;
+      max-width:min(920px, 100%);
+      padding:20px;
+      display:grid; gap:12px;
     }
 
     h1{
-      font-size: clamp(32px, 6vw, 56px);
-      margin: 0 0 .2em 0;
-      font-weight: 400;
+      font-size:clamp(32px,6vw,56px);
+      margin:0 0 .2em;
+      font-weight:400;
     }
     p.description{
-      font-size: clamp(16px, 3.2vw, 22px);
-      margin: 0 0 1em 0;
-      font-style: italic;
+      font-size:clamp(16px,3.2vw,22px);
+      margin:.2em 0 0;
+      font-style:italic;
     }
+
+    /* Bottoni categorie */
+    .actions{ display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:8px; }
+    .btn{
+      font:inherit;
+      padding:.6em 1.2em;
+      border-radius:999px;
+      border:1px solid transparent;
+      background:#fff;
+      cursor:pointer;
+      transition:transform .1s ease, box-shadow .2s ease, border-color .2s ease;
+      min-width:140px;
+    }
+    .btn:hover{ transform:translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,.10); }
+    .btn:disabled{ opacity:.5; cursor:not-allowed; transform:none; box-shadow:none; }
+
+    .facile { background:var(--orange1); border-color:var(--orange1-b); }
+    .difficile { background:var(--orange2); border-color:var(--orange2-b); }
+    .impossibile { background:var(--orange3); border-color:var(--orange3-b); }
+    .random { background:var(--orange4); border-color:var(--orange4-b); }
+
+    /* Nota/etichette: arancio in base alla categoria */
+    .note, .meta, .exhausted{
+      margin:6px 0 0;
+      font-size:clamp(14px,3vw,18px);
+      font-style:italic;
+    }
+    .meta{ opacity:.9; font-style:normal; font-size:clamp(13px,2.8vw,16px); }
+    .note.facile, .meta.facile, .exhausted.facile { color:#8A5E2E; }
+    .note.difficile, .meta.difficile, .exhausted.difficile { color:#8C5721; }
+    .note.impossibile, .meta.impossibile, .exhausted.impossibile { color:#8B4B12; }
+    .note.random, .meta.random, .exhausted.random { color:#87420A; }
 
     /* Testo sfida + animazione */
     p.challenge{
-      font-size: clamp(22px, 4.8vw, 34px);
-      font-weight: 700;
-      line-height: 1.25;
-      margin: 0 0 1em 0;
-      transition: opacity .35s ease, transform .35s ease;
+      min-height:3.2em; /* spazio riservato, inizialmente vuoto */
+      font-size:clamp(22px,4.8vw,34px);
+      font-weight:700;
+      line-height:1.25;
+      margin:6px 0 6px;
+      transition:opacity .35s ease, transform .35s ease;
     }
-    p.challenge.fade-out{
-      opacity: 0;
-      transform: translateY(8px);
-    }
-    @keyframes fadeInUp{
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    p.challenge.fade-in{
-      animation: fadeInUp .35s ease forwards;
-    }
-
-    .actions{ display:flex; justify-content:center; gap:10px; margin-bottom: 1em; flex-wrap:wrap; }
-    button{
-      font: inherit;
-      padding: .6em 1.2em;
-      border-radius: 25px;
-      border: 1px solid #c8bca8;
-      background: #fff;
-      cursor: pointer;
-      transition: transform .1s;
-    }
-    button:hover{ transform: translateY(-2px); }
-
-    p.thanks{
-      font-size: clamp(14px, 3vw, 18px);
-      font-style: italic;
-      margin: 0;
-    }
-
-    /* Pulsante musica “secondario” (compare solo se il file esiste) */
-    .btn-ghost{
-      background: rgba(255,255,255,0.7);
-      border: 1px solid #d9d0c1;
-    }
+    p.challenge.fade-out{ opacity:0; transform:translateY(8px); }
+    @keyframes fadeInUp{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
+    p.challenge.fade-in{ animation:fadeInUp .35s ease forwards; }
   </style>
 </head>
 <body>
@@ -111,138 +121,157 @@
 
   <main class="stack">
     <h1>Sfida</h1>
-    <p class="description">Un piccolo gioco per rendere la festa ancora più speciale.</p>
-    <p class="challenge" id="challengeText"></p>
+    <p class="description">Scegli una categoria e pesca una sfida. Hai <strong>3 tentativi</strong> totali per la serata. “Random” pesca da tutte.</p>
 
     <div class="actions">
-      <button id="newBtn" type="button">Nuova sfida</button>
-      <button id="musicBtn" type="button" class="btn-ghost" style="display:none;">Musica ▷</button>
+      <button class="btn facile" data-cat="facile">Facile</button>
+      <button class="btn difficile" data-cat="difficile">Difficile</button>
+      <button class="btn impossibile" data-cat="impossibile">Impossibile</button>
+      <button class="btn random" data-cat="random">Random</button>
     </div>
 
-    <p class="thanks">Grazie per partecipare e rendere questo giorno indimenticabile.</p>
+    <p class="note" id="note">Nessuna sfida mostrata: scegli un bottone per iniziare.</p>
+    <p class="challenge" id="challengeText"></p>
+    <p class="meta" id="attemptsText">Tentativi rimasti: <span id="attemptsLeft">3</span></p>
+    <p class="exhausted" id="exhaustedMsg" style="display:none;">Hai esaurito i 3 tentativi. Buon divertimento! 🥂</p>
   </main>
 
-  <!-- Audio di sottofondo (opzionale): se "musica.mp3" non esiste, il bottone resta nascosto -->
-  <audio id="bgMusic" src="musica.mp3" loop preload="none"></audio>
-
   <script>
-    // Precarico lo sfondo e lo applico quando è pronto (evita pagina “vuota” finché l’immagine non c’è)
+    // Precarico sfondo
     (function preloadBg(){
-      try{
-        const img = new Image();
-        img.onload = () => document.body.classList.add('bg-loaded');
-        img.onerror = () => {/* resta il fallback */}
-        img.src = 'sfondo.jpg';
-      }catch(e){}
+      const img = new Image();
+      img.onload = () => document.body.classList.add('bg-loaded');
+      img.onerror = () => {};
+      img.src = 'sfondo.jpg';
     })();
 
-    // Lista delle 20 sfide (con la 7 aggiornata)
-    const challenges = [
-      "Fai un brindisi con un tavolo che non conosci.",
-      "Scatta una foto divertente con due persone appena conosciute.",
-      "Alza il bicchiere e proponi un brindisi insieme al tuo tavolo gridando “Viva gli sposi!”.",
-      "Con il tuo tavolo scegliete un gesto elegante o divertente (es. un brindisi simultaneo, alzare le mani, fare un cuore con le dita) e fatelo insieme guardando gli sposi.",
-      "Crea con il tuo tavolo una posa buffa e fate una foto di gruppo da mostrare agli sposi.",
-      "Invita qualcuno a ballare una canzone che non conosci.",
-      "Trova un invitato che ha lo stesso drink o piatto e fate un selfie brindando.",
-      "Fai un applauso improvvisato con il tuo tavolo e coinvolgi chi ti sta intorno.",
-      "Impara il nome di tre persone nuove e salutale per nome più tardi.",
-      "Racconta agli sposi un tuo piccolo ricordo felice legato a loro.",
-      "Condividi al tavolo una curiosità su di te che pochi sanno.",
-      "Registra un breve video di auguri (10–15s) con qualcuno del tuo tavolo.",
-      "Fai ridere il tuo tavolo con una battuta o un brindisi simpatico.",
-      "Impara e mostra un passo di danza nuovo con un invitato per almeno 15 secondi.",
-      "Trova un invitato con il tuo stesso colore di outfit e fate una foto.",
-      "Fai un mini brindisi “alla spontaneità” con il tuo vicino di sedia.",
-      "Scatta la foto di un dettaglio che ti rende felice oggi e conservala per gli sposi.",
-      "Inizia al tuo tavolo una catena di abbracci o strette di mano: passa il gesto al vicino finché gira tutto il tavolo.",
-      "Coinvolgi due tavoli vicini e organizzate insieme un mini “coro” di auguri agli sposi.",
-      "Insegna a un invitato una parola nella tua lingua o dialetto."
-    ];
+    // ====== LISTE DI SFIDE ======
+    const pool = {
+      facile: [
+        "Invita qualcuno a ballare una canzone.",
+        "Fai un brindisi con un tavolo che non conosci.",
+        "Selfie con due sconosciuti mentre brindate.",
+        "Invita a ballare la sposa (se ti rifiuta sei invitato a lasciare la tenuta).",
+        "Invita a ballare lo sposo (se ti rifiuta sei invitato a lasciare la tenuta).",
+        "Chi ride per primo perde: scegli qualcuno, guardatevi negli occhi per 30 secondi; chi ride per primo beve il proprio drink in un sorso.",
+        "Limbo da sala: due persone ai lati, prendi una cravatta per fare la barra. Si passa sotto uno alla volta; ad ogni giro abbassa di un palmo. Chi tocca la barra o mette mano a terra, sorso di penitenza."
+      ],
+      difficile: [
+        "Dai un bacio sulla guancia alla nonna della sposa.",
+        "Inventa un brindisi per gli sposi con i tuoi vicini di posto, alzati sulla sedia e recitalo.",
+        "Vai dai genitori di uno degli sposi e racconta una barzelletta sporca.",
+        "Alzati e fai un giro di corsa tra i tavoli.",
+        "Fai partire un trenino con gli invitati (almeno 15 persone).",
+        "Trascina in pista per un breve ballo uno dei genitori di uno dei due sposi.",
+        "Cambio posto estremo: siediti ad un altro tavolo, presentati, brindisi e ritorna al tuo posto.",
+        "Tunnel umano: forma due file e fai passare dentro gli sposi e altri invitati."
+      ],
+      impossibile: [
+        "Ruba il maggiolino degli sposi e compi una rapina",
+        "Iniziali umane degli sposi: disponi almeno 20 persone per comporre le iniziali, foto e brindisi finale.",
+        "Fai partire la “Ola” che coinvolga tutti i tavoli (min. 40 persone)."
+      ]
+    };
+    const allKeys = ["facile","difficile","impossibile"];
 
-    // Local storage e random
-    const STORAGE_KEY = "sfida_generica";
-    function loadSaved(){
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "null"); }
-      catch { return null; }
-    }
-    function save(index){ localStorage.setItem(STORAGE_KEY, JSON.stringify({ index })); }
-    function pickRandom(exclude){
-      let idx;
-      do { idx = Math.floor(Math.random() * challenges.length); }
-      while (idx === exclude && challenges.length > 1);
-      return idx;
+    // ====== Tentativi (max 3 totali) ======
+    const ATTEMPTS_MAX = 3;
+    const ATTEMPTS_KEY = "sfida_attempts_left_v1";
+    let attemptsLeft = Number(localStorage.getItem(ATTEMPTS_KEY));
+    if (!Number.isInteger(attemptsLeft) || attemptsLeft < 0 || attemptsLeft > ATTEMPTS_MAX) {
+      attemptsLeft = ATTEMPTS_MAX;
+      localStorage.setItem(ATTEMPTS_KEY, attemptsLeft);
     }
 
-    // Animazione cambio testo (rispetta prefers-reduced-motion)
-    function animateSwap(el, newText){
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if(reduce){
-        el.textContent = newText;
+    const challengeEl = document.getElementById("challengeText");
+    const noteEl = document.getElementById("note");
+    const attemptsText = document.getElementById("attemptsText");
+    const exhaustedMsg = document.getElementById("exhaustedMsg");
+    const attemptsEl = document.getElementById("attemptsLeft");
+    const buttons = Array.from(document.querySelectorAll(".btn"));
+    attemptsEl.textContent = attemptsLeft;
+
+    function setUnderTextsTone(tone){ // applica colore arancio coerente
+      ["facile","difficile","impossibile","random"].forEach(c=>{
+        noteEl.classList.remove(c); attemptsText.classList.remove(c); exhaustedMsg.classList.remove(c);
+      });
+      if (tone){
+        noteEl.classList.add(tone);
+        attemptsText.classList.add(tone);
+        exhaustedMsg.classList.add(tone);
+      }
+    }
+
+    function setNoteCat(cat){
+      if (!cat){
+        setUnderTextsTone(null);
+        noteEl.textContent = "Nessuna sfida mostrata: scegli un bottone per iniziare.";
         return;
       }
+      const tone = cat === "random" ? "random" : cat;
+      setUnderTextsTone(tone);
+      noteEl.textContent = (cat === "random") ? "Hai scelto: Random." : `Hai scelto: ${cat.charAt(0).toUpperCase()+cat.slice(1)}.`;
+    }
+
+    // Animazione testo
+    function animateSwap(el, text){
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce){ el.textContent = text; return; }
       el.classList.add('fade-out');
-      el.addEventListener('transitionend', function handler(){
-        el.removeEventListener('transitionend', handler);
-        el.textContent = newText;
+      el.addEventListener('transitionend', function h(){
+        el.removeEventListener('transitionend', h);
+        el.textContent = text;
         el.classList.remove('fade-out');
         el.classList.add('fade-in');
         setTimeout(() => el.classList.remove('fade-in'), 350);
-      }, { once: true });
+      }, { once:true });
     }
 
-    (function init(){
-      // Sfida iniziale
-      let saved = loadSaved();
-      let index = (saved && Number.isInteger(saved.index)) ? saved.index : pickRandom();
-      if (!saved) save(index);
+    function pickRandom(arr, excludeIndex){
+      let idx;
+      do { idx = Math.floor(Math.random() * arr.length); }
+      while (arr.length > 1 && idx === excludeIndex);
+      return idx;
+    }
 
-      const challengeText = document.getElementById("challengeText");
-      animateSwap(challengeText, challenges[index]);
+    let lastIndex = { facile:null, difficile:null, impossibile:null, random:null };
 
-      document.getElementById("newBtn").addEventListener("click", () => {
-        index = pickRandom(index);
-        save(index);
-        animateSwap(challengeText, challenges[index]);
-      });
+    function drawChallenge(cat){
+      if (attemptsLeft <= 0) return;
 
-      // Musica (mostra il bottone solo se il file esiste davvero)
-      const audio = document.getElementById('bgMusic');
-      const btnMusic = document.getElementById('musicBtn');
-
-      // Tenta di caricare una piccola porzione per capire se esiste
-      let checked = false;
-      function showIfAvailable(){
-        if(checked) return;
-        checked = true;
-        if (audio.duration > 0 || !isNaN(audio.duration)) {
-          btnMusic.style.display = 'inline-block';
-        }
+      let chosenCat = cat;
+      if (cat === "random") {
+        chosenCat = allKeys[Math.floor(Math.random() * allKeys.length)];
       }
-      audio.addEventListener('loadedmetadata', showIfAvailable);
-      audio.addEventListener('canplay', showIfAvailable);
-      audio.addEventListener('error', () => { btnMusic.style.display = 'none'; });
+      const arr = pool[chosenCat];
+      const idx = pickRandom(arr, lastIndex[chosenCat]);
+      lastIndex[chosenCat] = idx;
 
-      audio.volume = 0.35;
-      let playing = false;
+      animateSwap(challengeEl, arr[idx]);
+      setNoteCat(cat);
 
-      btnMusic.addEventListener('click', async () => {
-        try{
-          if(!playing){
-            await audio.play();
-            playing = true;
-            btnMusic.textContent = 'Musica ❚❚';
-          } else {
-            audio.pause();
-            playing = false;
-            btnMusic.textContent = 'Musica ▷';
-          }
-        }catch(e){
-          playing = false;
-          btnMusic.textContent = 'Musica ▷';
-        }
-      });
-    })();
+      attemptsLeft -= 1;
+      localStorage.setItem(ATTEMPTS_KEY, attemptsLeft);
+      attemptsEl.textContent = attemptsLeft;
+
+      if (attemptsLeft <= 0) {
+        buttons.forEach(b => { b.disabled = true; b.setAttribute("aria-disabled","true"); });
+        exhaustedMsg.style.display = "block";
+      }
+    }
+
+    // Wiring
+    buttons.forEach(b => b.addEventListener("click", () => drawChallenge(b.dataset.cat)));
+
+    // Stato iniziale
+    if (attemptsLeft <= 0) {
+      buttons.forEach(b => { b.disabled = true; b.setAttribute("aria-disabled","true"); });
+      exhaustedMsg.style.display = "block";
+      setUnderTextsTone("random"); // tono neutro aranciato
+    } else {
+      challengeEl.textContent = ""; // pagina vuota all'inizio
+      setNoteCat(null);
+    }
   </script>
 </body>
 </html>
