@@ -14,7 +14,7 @@
     :root{
       --ink:#4a3f30;
 
-      /* 4 aranci delicati */
+      /* 4 aranci delicati per i BOTTONI */
       --orange1:#FFE1B3; /* Facile */
       --orange2:#FFD199; /* Difficile */
       --orange3:#FFC07F; /* Impossibile */
@@ -24,6 +24,12 @@
       --orange2-b:#E7BC84;
       --orange3-b:#E2A869;
       --orange4-b:#D99953;
+
+      /* Tinte SOLO per il TESTO (più scure e leggibili) */
+      --t-orange1:#B65B00;
+      --t-orange2:#A94F00;
+      --t-orange3:#974300;
+      --t-orange4:#8A3B00;
     }
 
     html, body { height:100%; margin:0; }
@@ -90,17 +96,21 @@
     .impossibile { background:var(--orange3); border-color:var(--orange3-b); }
     .random { background:var(--orange4); border-color:var(--orange4-b); }
 
-    /* Nota/etichette: arancio in base alla categoria */
+    /* Testi sotto: NERI, nessuna evidenziazione; solo il COLORE TESTO varia col livello scelto */
     .note, .meta, .exhausted{
       margin:6px 0 0;
-      font-size:clamp(14px,3vw,18px);
-      font-style:italic;
+      background:transparent !important;
+      text-shadow:none;
+      color:#111; /* nero leggibile */
     }
-    .meta{ opacity:.9; font-style:normal; font-size:clamp(13px,2.8vw,16px); }
-    .note.facile, .meta.facile, .exhausted.facile { color:#8A5E2E; }
-    .note.difficile, .meta.difficile, .exhausted.difficile { color:#8C5721; }
-    .note.impossibile, .meta.impossibile, .exhausted.impossibile { color:#8B4B12; }
-    .note.random, .meta.random, .exhausted.random { color:#87420A; }
+    .note{ font-size:clamp(14px,3vw,18px); font-style:italic; }
+    .meta{ font-size:clamp(13px,2.8vw,16px); opacity:.9; }
+    .exhausted{ font-size:clamp(14px,3vw,18px); font-weight:600; }
+
+    .note.facile, .meta.facile, .exhausted.facile { color:var(--t-orange1); }
+    .note.difficile, .meta.difficile, .exhausted.difficile { color:var(--t-orange2); }
+    .note.impossibile, .meta.impossibile, .exhausted.impossibile { color:var(--t-orange3); }
+    .note.random, .meta.random, .exhausted.random { color:var(--t-orange4); }
 
     /* Testo sfida + animazione */
     p.challenge{
@@ -120,7 +130,7 @@
   <div class="spacer"></div>
 
   <main class="stack">
-    <h1>Sfida</h1>
+    <h1 id="title">Sfida</h1>
     <p class="description">Scegli una categoria e pesca una sfida. Hai <strong>3 tentativi</strong> totali per la serata. “Random” pesca da tutte.</p>
 
     <div class="actions">
@@ -167,9 +177,9 @@
         "Tunnel umano: forma due file e fai passare dentro gli sposi e altri invitati."
       ],
       impossibile: [
-        "Ruba il maggiolino degli sposi e compi una rapina",
+        "Ruba il maggiolino degli sposi e compi una rapina.",
         "Iniziali umane degli sposi: disponi almeno 20 persone per comporre le iniziali, foto e brindisi finale.",
-        "Fai partire la “Ola” che coinvolga tutti i tavoli (min. 40 persone)."
+        "Fai partire la “Ola” che coinvolga tutti i tavoli."
       ]
     };
     const allKeys = ["facile","difficile","impossibile"];
@@ -177,6 +187,7 @@
     // ====== Tentativi (max 3 totali) ======
     const ATTEMPTS_MAX = 3;
     const ATTEMPTS_KEY = "sfida_attempts_left_v1";
+
     let attemptsLeft = Number(localStorage.getItem(ATTEMPTS_KEY));
     if (!Number.isInteger(attemptsLeft) || attemptsLeft < 0 || attemptsLeft > ATTEMPTS_MAX) {
       attemptsLeft = ATTEMPTS_MAX;
@@ -191,7 +202,7 @@
     const buttons = Array.from(document.querySelectorAll(".btn"));
     attemptsEl.textContent = attemptsLeft;
 
-    function setUnderTextsTone(tone){ // applica colore arancio coerente
+    function setUnderTextsTone(tone){
       ["facile","difficile","impossibile","random"].forEach(c=>{
         noteEl.classList.remove(c); attemptsText.classList.remove(c); exhaustedMsg.classList.remove(c);
       });
@@ -260,14 +271,34 @@
       }
     }
 
-    // Wiring
+    // Bottoni
     buttons.forEach(b => b.addEventListener("click", () => drawChallenge(b.dataset.cat)));
+
+    // Long-press sul titolo “Sfida” per RESET tentativi (solo su questo dispositivo)
+    (function setupLongPressReset(){
+      const title = document.getElementById('title');
+      let timer;
+      const start = () => { timer = setTimeout(resetAttempts, 1200); };
+      const cancel = () => { clearTimeout(timer); };
+      function resetAttempts(){
+        attemptsLeft = ATTEMPTS_MAX;
+        localStorage.setItem(ATTEMPTS_KEY, attemptsLeft);
+        attemptsEl.textContent = attemptsLeft;
+        buttons.forEach(b => { b.disabled = false; b.removeAttribute("aria-disabled"); });
+        exhaustedMsg.style.display = "none";
+        noteEl.textContent = "Tentativi reimpostati.";
+        setUnderTextsTone("random"); // tono neutro
+      }
+      title.addEventListener('mousedown', start);
+      title.addEventListener('touchstart', start);
+      ['mouseup','mouseleave','touchend','touchcancel'].forEach(ev=>title.addEventListener(ev, cancel));
+    })();
 
     // Stato iniziale
     if (attemptsLeft <= 0) {
       buttons.forEach(b => { b.disabled = true; b.setAttribute("aria-disabled","true"); });
       exhaustedMsg.style.display = "block";
-      setUnderTextsTone("random"); // tono neutro aranciato
+      setUnderTextsTone("random");
     } else {
       challengeEl.textContent = ""; // pagina vuota all'inizio
       setNoteCat(null);
