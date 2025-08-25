@@ -186,13 +186,24 @@
 
     // ====== Tentativi (max 3 totali) ======
     const ATTEMPTS_MAX = 3;
-    const ATTEMPTS_KEY = "sfida_attempts_left_v1";
+    // 🔁 bump versione per resettare eventuali zeri salvati in precedenza
+    const ATTEMPTS_KEY = "sfida_attempts_left_v2";
 
-    let attemptsLeft = Number(localStorage.getItem(ATTEMPTS_KEY));
-    if (!Number.isInteger(attemptsLeft) || attemptsLeft < 0 || attemptsLeft > ATTEMPTS_MAX) {
+    // Storage sicuro (non esplode in modalità privata / Safari restrittivo)
+    const storage = (() => {
+      try { const t="__t"; localStorage.setItem(t,"1"); localStorage.removeItem(t); return localStorage; }
+      catch { return { getItem: () => null, setItem: () => {}, removeItem: () => {} }; }
+    })();
+
+    // Inizializzazione corretta: se la chiave non esiste → parti da 3
+    const raw = storage.getItem(ATTEMPTS_KEY);
+    let attemptsLeft = (raw === null) ? ATTEMPTS_MAX : parseInt(raw, 10);
+
+    // Sanity & salvataggio iniziale
+    if (!Number.isFinite(attemptsLeft) || attemptsLeft < 0 || attemptsLeft > ATTEMPTS_MAX) {
       attemptsLeft = ATTEMPTS_MAX;
-      localStorage.setItem(ATTEMPTS_KEY, attemptsLeft);
     }
+    storage.setItem(ATTEMPTS_KEY, String(attemptsLeft));
 
     const challengeEl = document.getElementById("challengeText");
     const noteEl = document.getElementById("note");
@@ -262,7 +273,7 @@
       setNoteCat(cat);
 
       attemptsLeft -= 1;
-      localStorage.setItem(ATTEMPTS_KEY, attemptsLeft);
+      storage.setItem(ATTEMPTS_KEY, String(attemptsLeft));
       attemptsEl.textContent = attemptsLeft;
 
       if (attemptsLeft <= 0) {
@@ -282,7 +293,7 @@
       const cancel = () => { clearTimeout(timer); };
       function resetAttempts(){
         attemptsLeft = ATTEMPTS_MAX;
-        localStorage.setItem(ATTEMPTS_KEY, attemptsLeft);
+        storage.setItem(ATTEMPTS_KEY, String(attemptsLeft));
         attemptsEl.textContent = attemptsLeft;
         buttons.forEach(b => { b.disabled = false; b.removeAttribute("aria-disabled"); });
         exhaustedMsg.style.display = "none";
